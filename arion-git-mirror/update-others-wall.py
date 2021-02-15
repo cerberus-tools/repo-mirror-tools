@@ -6,6 +6,7 @@ from datetime import datetime
 
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument("--repo-local-root", default="/home/work/git-mirror/git-mirror_home/git/wall.lge.com/")
+arg_parser.add_argument("--sub_folders", default="bsp,module")
 args = arg_parser.parse_args()
 repo_local_root = args.repo_local_root
 
@@ -20,7 +21,7 @@ def find_git_repo_dirs(root_dir):
 def update_mirrored_repo(repo_dir):
     try:
         subprocess.check_call("git ls-remote ", shell=True, cwd=repo_dir, stderr=subprocess.DEVNULL,
-                                           stdout=subprocess.DEVNULL)
+                              stdout=subprocess.DEVNULL)
         print(f"SUCCESS: Can update {repo_dir}")
         subprocess.check_call("git config --unset-all remote.origin.fetch", shell=True, cwd=repo_dir,
                               stderr=subprocess.DEVNULL,
@@ -38,18 +39,15 @@ def update_mirrored_repo(repo_dir):
                               stderr=subprocess.DEVNULL,
                               stdout=subprocess.DEVNULL)
         subprocess.check_call("git remote update --prune", shell=True, cwd=repo_dir,
-                                             stderr=subprocess.DEVNULL,
-                                             stdout=subprocess.DEVNULL)
+                              stderr=subprocess.DEVNULL,
+                              stdout=subprocess.DEVNULL)
         print(f"SUCCESS: updating {repo_dir} is done")
     except subprocess.CalledProcessError as err:
         print(f"ERROR: Command {err.cmd} on {repo_dir} with error code {err.returncode}")
 
 
 def update_wall_bsp_module():
-    sub_folders = (
-        "module",
-        "bsp"
-    )
+    sub_folders = args.sub_folders.split(",")
     folders = map(lambda sub_folder: repo_local_root + sub_folder, sub_folders)
     for each_folder in folders:
         repo_dirs = find_git_repo_dirs(each_folder)
