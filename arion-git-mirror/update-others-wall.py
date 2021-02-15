@@ -19,10 +19,12 @@ def find_git_repo_dirs(root_dir):
 
 
 def update_mirrored_repo(repo_dir):
+    before = datetime.now()
     try:
         subprocess.check_call("git ls-remote ", shell=True, cwd=repo_dir, stderr=subprocess.DEVNULL,
                               stdout=subprocess.DEVNULL)
-        print(f"SUCCESS: Can update {repo_dir}")
+        after_check = datetime.now()
+        print(f"{after_check - before}\tCHECK\tCan update {repo_dir}")
         subprocess.check_call("git config --unset-all remote.origin.fetch", shell=True, cwd=repo_dir,
                               stderr=subprocess.DEVNULL,
                               stdout=subprocess.DEVNULL)
@@ -41,9 +43,11 @@ def update_mirrored_repo(repo_dir):
         subprocess.check_call("git remote update --prune", shell=True, cwd=repo_dir,
                               stderr=subprocess.DEVNULL,
                               stdout=subprocess.DEVNULL)
-        print(f"SUCCESS: updating {repo_dir} is done")
+        after = datetime.now()
+        print(f"{after - before}\tSUCCESS\tupdating {repo_dir} is done")
     except subprocess.CalledProcessError as err:
-        print(f"ERROR: Command {err.cmd} on {repo_dir} with error code {err.returncode}")
+        after = datetime.now()
+        print(f"{after - before}\tERROR\tCommand {err.cmd} on {repo_dir} with error code {err.returncode}")
 
 
 def update_wall_bsp_module():
