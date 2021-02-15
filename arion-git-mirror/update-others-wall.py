@@ -12,7 +12,7 @@ repo_local_root = args.repo_local_root
 
 def find_git_repo_dirs(root_dir):
     repo_dirs = []
-    for dir_path in glob.glob(f"{root_dir}/*.git/", recursive=True):
+    for dir_path in glob.glob(f"{root_dir}/*/**/*.git/", recursive=True):
         repo_dirs.append(dir_path)
     return repo_dirs
 
